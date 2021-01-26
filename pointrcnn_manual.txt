@@ -1,0 +1,18 @@
+python generate_gt_database.py --class_name 'Multiclass' --split train
+
+python train_rcnn.py --cfg_file cfgs/default.yaml --batch_size 16 --train_mode rpn --epochs 200
+
+python train_rcnn.py --cfg_file cfgs/default.yaml --batch_size 4 --train_mode rcnn --epochs 100 --ckpt_save_interval 2 --rpn_ckpt ../output/rpn/default/ckpt/checkpoint_epoch_200.pth
+
+python eval_rcnn.py --cfg_file cfgs/default.yaml --ckpt ../output/rcnn/default/ckpt/checkpoint_epoch_100.pth --eval_mode rcnn --test
+
+
+python train_rcnn_depth.py --gt_database "" --cfg_file cfgs/e2e.yaml --batch_size 4 --train_mode end2end --ckpt_save_interval 1 --ckpt depth_network/results/stack_finetune_from_sceneflow/checkpoint.pth.tar --epochs 10 --mgpus --finetune
+
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1qlvZPezFsnEWDNNHT9cGpmxIY388k4iS' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1qlvZPezFsnEWDNNHT9cGpmxIY388k4iS" -O checkpoint.pth.tar && rm -rf /tmp/cookies.txt
+
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1aIP1kwhrtlkyV59_9iOl8261ACgGhLup' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1aIP1kwhrtlkyV59_9iOl8261ACgGhLup" -O checkpoint_epoch70.pth && rm -rf /tmp/cookies.txt
+
+CUDA_VISIBLE_DEVICES=0,1 python train_rcnn_depth.py --gt_database "" --cfg_file cfgs/e2e.yaml \
+ --batch_size 4 --train_mode end2end --ckpt_save_interval 1 --ckpt depth_network/results/stack_finetune_from_sceneflow/checkpoint_epoch_70.pth \
+--epochs 10 --mgpus --finetune
