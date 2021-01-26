@@ -23,10 +23,10 @@ git clone https://github.com/sshaoshuai/PointRCNN.git
 ```
 
 b. Install the dependent python libraries like `easydict`,`tqdm`, `tensorboardX ` etc.
-'''shell
+```shell
 conda env create --file environment.yaml
 conda activate pointrcnn
-'''
+```
 
 c. Build and install the `pointnet2_lib`, `iou3d`, `roipool3d` libraries by executing the following command:
 ```shell
@@ -52,17 +52,24 @@ PointRCNN
 Here the images are only used for visualization and the [road planes](https://drive.google.com/file/d/1d5mq0RXRnvHPVeKx6Q612z0YRO1t2wAp/view?usp=sharing) are optional for data augmentation in the training.
 
 ## Training
-'''shell
+a. Create ground truth Multiclass File (Need to change tools/default.yaml CLASSES: Car -> Multiclass)
+```shell
 python generate_gt_database.py --class_name 'Multiclass' --split train
+```
+b. RPN training (Create proposal candidates)
+```shell
 python train_rcnn.py --cfg_file cfgs/default.yaml --batch_size 16 --train_mode rpn --epochs 200
+```
+c. RCNN training (Create target proposals)
+```shell
 python train_rcnn.py --cfg_file cfgs/default.yaml --batch_size 4 --train_mode rcnn --epochs 100 --ckpt_save_interval 2 --rpn_ckpt ../output/rpn/default/ckpt/checkpoint_epoch_200.pth
-'''
+```
 
 
 ## Inference
-'''shell
+```shell
 python eval_rcnn.py --cfg_file cfgs/default.yaml --ckpt ../output/rcnn/default/ckpt/checkpoint_epoch_100.pth --eval_mode rcnn --test
-'''
+```
 If you want to test, not eval, change TEST.SPLIT: val => TEST.SPLIT: test in tools/default.yaml general training config part
 
 
