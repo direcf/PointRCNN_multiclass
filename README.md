@@ -86,6 +86,6 @@ If you find this work useful in your research, please consider cite:
 ```
 
 ## To Do List
-- [ ] Implement multiclass one shot learning
-- [x] Increase Pedestrain, Cyclist Detection Accuracy (Data unbalance problem)
-- [x] Annotation arrangement
+- [x] Implement multiclass one shot learning and Release
+- [ ] Increase Pedestrain, Cyclist Detection Accuracy (Data unbalance problem)
+- [ ] Annotation arrangement
